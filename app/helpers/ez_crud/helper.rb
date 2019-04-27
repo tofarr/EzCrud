@@ -78,7 +78,7 @@ module EzCrud::Helper
   # PATCH /${model_type}
   # PATCH /${model_type}.json
   def update_all
-    @update_all_spec = update_all_class.new(destroy_all_params)
+    @update_all_spec = create_update_all_spec
     if @update_all_spec.save
       EzCrudJob.perform_later(@destroy_all_spec.id)
       respond_to do |format|
@@ -96,7 +96,7 @@ module EzCrud::Helper
   # DELETE /${model_type}
   # DELETE /${model_type}.json
   def destroy_all
-    @destroy_all_spec = destroy_all_class.new(destroy_all_params)
+    @destroy_all_spec = create_destroy_all_spec
     if @destroy_all_spec.save
       EzCrudJob.perform_later(@destroy_all_spec.id)
       respond_to do |format|
@@ -156,54 +156,64 @@ module EzCrud::Helper
       @count ||= current_search.count(self.class.model_class.all)
     end
 
+    def create_destroy_all_spec
+      destroy_all_spec = destroy_all_class.new
+      destroy_all_spec.model_type = model_class.name
+      if params[:batch_file]
+        process_file(params[:batch_file], destroy_all_spec, :batch_file)
+      else
+        destroy_all_spec.search = current_search
+      end
+      destroy_all_spec
+    end
+
     def self.destroy_all_class
       @destroy_all_class ||= begin
                            Object.const_get("#{self.name.gsub("Controller", "").singularize}DestroyAllJob")
                          rescue NameError => e
-                           EzCrud::DestroyAllJob
+                           EzCrud::DestroyAllJobSpec
                          end
       @destroy_all_class
     end
 
-    def destroy_all_params
-      {
-        batch_file: params[:batch_file],
-        search: current_search
-      }
-    end
-
-    def upsert_all_params
-      {
-        batch_file: params[:batch_file],
-        search: current_search,
-        params: model_params
-      }
+    def create_update_all_spec
+      update_all_spec = update_all_class.new
+      update_all_spec.model_type = model_class.name
+      if params[:batch_file]
+        process_file(params[:batch_file], update_all_spec, :batch_file)
+      else
+        update_all_spec.search = current_search
+        update_all_spec.updates = model_params
+      end
+      update_all_spec
     end
 
     def self.upsert_all_class
       @upsert_all_class ||= begin
                            Object.const_get("#{self.name.gsub("Controller", "").singularize}UpsertAllJob")
                          rescue NameError => e
-                           EzCrud::UpsertAllJob
+                           EzCrud::UpdateAllJobSpec
                          end
       @upsert_all_class
     end
 
-    def process_img(attr_sym)
+    def process_upload(attr_sym)
       if params[:model]["destroy_#{attr_sym}".to_sym]
         attr = current_model.send(attr_sym)
         attr.purge if attr.attached?
         return
       end
       f = params[:model][attr_sym]
-      if f
-        if f.class.name == 'String' && f.starts_with?('data:') # String was sent - manually convert to file
-          uri = URI::Data.new(f)
-          extension = MIME::Types[uri.content_type].first.extensions.first
-          model.send(attr_sym).attach(io: StringIO.new(uri.data), filename: "upload.#{extension}")
-        else
-          model.send(attr_sym).attach(f)
-        end
+      process_file(f, current_model, attr_sym) if f
+    end
+
+    def process_file(f, model, attr_sym)
+      if f.class.name == 'String' && f.starts_with?('data:') # String was sent - manually convert to file
+        uri = URI::Data.new(f)
+        extension = MIME::Types[uri.content_type].first.extensions.first
+        model.send(attr_sym).attach(io: StringIO.new(uri.data), filename: "upload.#{extension}")
+      else
+        model.send(attr_sym).attach(f)
       end
     end
 

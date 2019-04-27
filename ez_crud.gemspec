@@ -8,10 +8,10 @@ Gem::Specification.new do |spec|
   spec.name        = "ez_crud"
   spec.version     = EzCrud::VERSION
   spec.authors     = [""]
-  spec.email       = ["tofarr@everyonesocial.com"]
-  spec.homepage    = "TODO"
-  spec.summary     = "TODO: Summary of EzCrud."
-  spec.description = "TODO: Description of EzCrud."
+  spec.email       = ["tofarr@gmail.com"]
+  spec.homepage    = "http://ez-crud.com"
+  spec.summary     = "Gem for easing the process of creating crud operations"
+  spec.description = "Gem for easing the process of creating crud operations"
   spec.license     = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
