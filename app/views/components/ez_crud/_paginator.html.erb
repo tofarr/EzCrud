@@ -1,0 +1,33 @@
+<%=tag.div class: "ez-crud-paginator" do %>
+  <%
+  num_pages = local_assigns.fetch(:num_pages, nil) || search.num_pages(model_class.all)
+  return if num_pages == 1
+  %>
+
+  <% if search.page_index > 1 %>
+    <%=link_to I18n.t("ez_crud.first"), {search: (params[:search] || {}).as_json.merge("page_index" => 0)}, class: "button first-link" %>
+  <% end %>
+
+  <% if search.page_index > 0 %>
+    <%=link_to I18n.t("ez_crud.prev"), {search: (params[:search] || {}).as_json.merge("page_index" => search.page_index - 1)}, class: "button prev-link" %>
+  <% end %>
+
+  <%=form_with url: url_for(controller: params[:controller], action: params[:action]), local: true, method: :get do |form| %>
+    <% search.as_json.symbolize_keys.except(:page_index).each do |key, value|
+      unless value.nil? %>
+        <%= hidden_field_tag "search[#{key}]", value %>
+      <% end %>
+    <% end %>
+    <%= form.select "search[page_index]", (0...num_pages).map{|n| [n+1,n]}, selected: search.page_index, class: "page-select" %>
+    <%= form.submit I18n.t("ez_crud.go"), class: "button" %>
+  <% end %>
+
+  <% if search.page_index < (num_pages - 2) %>
+    <%=link_to I18n.t("ez_crud.next"), {search: (params[:search] || {}).as_json.merge("page_index" => search.page_index + 1)}, class: "button next-link" %>
+  <% end %>
+
+  <% if search.page_index < (num_pages - 1) %>
+    <%=link_to I18n.t("ez_crud.last"), {search: (params[:search] || {}).as_json.merge("page_index" => num_pages - 1)}, class: "button last-link" %>
+  <% end %>
+
+<% end %>

@@ -14,11 +14,11 @@ class EzCrud::Search
     if page_size.present?
       self.page_size = page_size.to_i
       raise ApplicationController::BadRequest.new() if (page_size <= 0)
-      raise ApplicationController::BadRequest.new() if (hash[:enforce_limit] != false) && (page_size > Rails.configuration.max_page_size)
+      raise ApplicationController::BadRequest.new() if (hash[:enforce_limit] != false) && (page_size > Rails.configuration.ez_crud_max_page_size)
     end
     self.ids = ids.reject{|v| v.empty? }.map{|v| v.to_i } if ids.present?
-    self.page_size = page_size.present? ? page_size.to_i : Rails.configuration.max_page_size
-    self.page_index = page_index.to_i if page_index.present?
+    self.page_size = page_size.present? ? page_size.to_i : Rails.configuration.ez_crud_max_page_size
+    self.page_index =  page_index.present? ? page_index.to_i : 0
   end
 
   def search(results)
@@ -32,29 +32,38 @@ class EzCrud::Search
     results.count
   end
 
+  def num_pages(results)
+    (count(results).to_f / page_size).ceil
+  end
+
   def apply_ids(results)
     results = results.where(id: ids) if ids.present?
     results
   end
 
-  def filter_attrs
-    []
+  def filter_attrs(results)
+    results.columns.select{|c| c.type==:string || c.type==:text }.map{|c|c.name.to_sym}
   end
 
   def apply_query(results)
     if query.present?
-      raise ApplicationController::BadRequest.new() if filter_attrs.blank?
       like = "%#{query}%"
-      results = filter_attrs.inject(results) do |results, filter_attr|
-        results.where("#{filter_attr} like ?", like)
+      s = StringIO.new
+      attrs = filter_attrs(results)
+      attrs.inject(true) do |first, attr|
+        s << ' OR ' unless first
+        s << attr
+        s << ' LIKE ?'
+        false
       end
+      results = results.where(*Array.new(attrs.length, like).unshift(s.string))
     end
     results = results.where("id < ?", max_id) if max_id.present?
     results
   end
 
-  def permitted_orders
-    filter_attrs + [:id, :created_at, :updated_at]
+  def permitted_orders(results)
+    filter_attrs(results) + [:id, :created_at, :updated_at]
   end
 
   def apply_sort_orders(results)
@@ -72,7 +81,7 @@ class EzCrud::Search
   def apply_sort_order(results, attr, desc)
     attr = attr.to_sym
     desc = desc.to_sym == :desc
-    raise ApplicationController::NotAuthorized.new() unless permitted_orders.include(attr)
+    raise ApplicationController::NotAuthorized.new() unless permitted_orders(results).include(attr)
     orders = {}
     orders[attr] = desc ? :desc : :asc
     results.orders(orders)
@@ -85,8 +94,7 @@ class EzCrud::Search
   end
 
   def default_search?
-    query.blank? && sort_order.blank? && ids.blank? &&
-      min_id.blank? && (page_index.blank? || page_index.to_i == 0)
+    query.blank? && sort_order.blank? && ids.blank?
   end
 
 end

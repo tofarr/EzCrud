@@ -1,0 +1,45 @@
+<%
+require "ez_crud/attrs"
+attrs = EzCrud::Attrs::summarize(model_class,
+  local_assigns.fetch(:only, nil),
+  local_assigns.fetch(:except, Rails.configuration.ez_crud_summarize_except),
+  local_assigns.fetch(:max_attrs, Rails.configuration.ez_crud_summarize_max_attrs))
+%>
+<div class="index-container">
+  <table class="index-table">
+    <thead>
+      <tr>
+        <% attrs.each do |attr| %>
+          <th><%=attr.to_s.titleize%></th>
+        <% end %>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tbody>
+        <% models.each do |model| %>
+          <tr>
+            <% attrs.each do |attr| %>
+              <td class="<%=model_class.attribute_types[attr.to_s].type%>"><%=model.send(attr)%></td>
+            <% end %>
+            <td>
+              <% if viewable?(model) %>
+                <%= link_to I18n.t("ez_crud.show"), model, class: "button show-button" %>
+              <% end %>
+              <% if editable?(model) %>
+                <%= link_to I18n.t("ez_crud.edit"), send("edit_#{model_class.name.underscore}_path".to_sym, model), class: "button edit-button" %>
+              <% end %>
+              <%if destroyable?(model) %>
+                <%= link_to I18n.t("ez_crud.destroy"), model, method: :delete, class: "button destroy-button", data: { confirm: 'Are you sure?' } %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </tbody>
+  </table>
+
+  <% if local_assigns.fetch(:paged, true) %>
+    <%= render 'components/ez_crud/paginator', search: search, model_class: model_class %>
+  <% end %>
+</div>

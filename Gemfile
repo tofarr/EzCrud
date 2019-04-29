@@ -13,3 +13,6 @@ gemspec
 
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
+
+# Added at 2019-04-27 16:09:45 -0600 by tofarr:
+gem "formtastic", "~> 3.1"

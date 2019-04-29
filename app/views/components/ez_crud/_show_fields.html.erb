@@ -1,0 +1,16 @@
+<%
+require "ez_crud/attrs"
+attrs = EzCrud::Attrs::show(model_class,
+  local_assigns.fetch(:only, nil),
+  local_assigns.fetch(:except, Rails.configuration.ez_crud_show_except))
+%>
+<div class="show-fields">
+  <% attrs.each do |attr| %>
+    <div class="field">
+      <label>
+        <%=attr.to_s.titleize%>
+      </label>
+      <div class="<%=model_class.attribute_types[attr.to_s].type%>"><%=model.send(attr)%></div>
+    </div>
+  <% end %>
+</div>
