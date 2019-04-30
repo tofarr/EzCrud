@@ -3,7 +3,7 @@ module EzCrud
 
     has_one_attached :batch_file
 
-    validates :validate_batch_file_is_json_or_csv
+    validate :validate_batch_file_is_json_or_csv
 
     def title
       "#{self.class.name}:#{id}"
@@ -51,7 +51,7 @@ module EzCrud
       rescue StandardError => error
         errors << error
       end
-      count, errors
+      return count, errors
     end
 
     def run_json
@@ -64,7 +64,7 @@ module EzCrud
       rescue StandardError => error
         errors << error
       end
-      count, errors
+      return count, errors
     end
 
     def run_search
@@ -73,7 +73,7 @@ module EzCrud
       search.search do |model|
         count = count + process_model(updates, errors)
       end
-      count, errors
+      return count, errors
     end
 
     def process_hash(hash, errors)
@@ -84,6 +84,7 @@ module EzCrud
     def validate_batch_file_is_json_or_csv
       if batch_file.attachment
         errors.add(:tags, I18n.t('unknown_content_type')) unless batch_file.content_type == 'application/json' || batch_file.content_type == 'text/csv'
+      end
     end
   end
 end

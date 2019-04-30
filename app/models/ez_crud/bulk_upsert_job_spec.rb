@@ -1,5 +1,5 @@
 module EzCrud
-  class UpdateAllJobSpec < ApplicationRecord
+  class BulkUpsertJobSpec < JobSpec
 
     def process_model(model, updates, errors)
       model.assign_attributes(updates)

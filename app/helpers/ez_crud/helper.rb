@@ -19,28 +19,65 @@ module EzCrud::Helper
     # GET /<model_type>.json
     def index
       current_models
+      respond_to do |format|
+        format.html do #use ez_crud if the template is missing use the default ez crud template
+          render "ez_crud/index.html.erb" unless template_exists? "#{model_class.name.pluralize}/index.html.erb"
+        end
+        format.json do
+          render(json: {search: @search, models: @models}) unless template_exists? "#{model_class.name.pluralize}/index.json.jbuilder"
+        end
+        format.csv do
+          response.headers['Content-Disposition'] = "attachment; filename=\"#{model_class.name}-#{Date.today}.csv\""
+          render "ez_crud/index.csv.erb" unless template_exists? "#{model_class.name.pluralize}/index.csv.erb"
+        end
+      end
     end
 
     # GET /<model_type>/count
     # GET /<model_type>/count.json
     def count
-      @count = current_search.count
+      @count = current_search.count(model_class.all)
+      render json: {count: @count}
     end
 
     # GET /<model_type>/1
     # GET /<model_type>/1.json
     def show
       current_model
+      respond_to do |format|
+        format.html do #use ez_crud if the template is missing use the default ez crud template
+          render "ez_crud/show.html.erb" unless template_exists? "#{model_class.name.pluralize}/show.html.erb"
+        end
+        format.json do
+          render(json: {model: @model}) unless template_exists? "#{model_class.name.pluralize}/show.json.jbuilder"
+        end
+      end
     end
 
     # GET /access_tokens/new
     def new
       @model = model_class.new
+      respond_to do |format|
+        format.html do #use ez_crud if the template is missing use the default ez crud template
+          render "ez_crud/new.html.erb" unless template_exists? "#{model_class.name.pluralize}/new.html.erb"
+        end
+        format.json do
+          render(json: {model: @model}) unless template_exists? "#{model_class.name.pluralize}/new.json.jbuilder"
+        end
+      end
     end
 
     # GET /access_tokens/1/edit
     def edit
       current_model
+      respond_to do |format|
+        format.html do #use ez_crud if the template is missing use the default ez crud template
+          render "ez_crud/edit.html.erb" unless template_exists? "#{model_class.name.pluralize}/edit.html.erb"
+        end
+        format.json do
+          render(json: {model: @model}) unless template_exists? "#{model_class.name.pluralize}/edit.json.jbuilder"
+        end
+      end
     end
 
     # POST /<model_type>
@@ -86,42 +123,34 @@ module EzCrud::Helper
 
     # GET /${model_type}/edit_all
     # DELETE /${model_type}/1.json
-    def edit_all
-      current_search
-    end
-
-    # PATCH /${model_type}
-    # PATCH /${model_type}.json
-    def update_all
-      @update_all_spec = create_update_all_spec
-      if @update_all_spec.save
-        EzCrudJob.perform_later(@destroy_all_spec.id)
-        respond_to do |format|
-          format.html { redirect_to users_url, notice: I18n.t('job_submitted') }
-          format.json { render :show, status: :ok, location: url_for(controller: "", action: "update_all") }
+    def bulk_edit
+      @cjob_spec = current_job_spec
+      respond_to do |format|
+        format.html do #use ez_crud if the template is missing use the default ez crud template
+          render "ez_crud/bulk_edit.html.erb" unless template_exists? "#{model_class.name.pluralize}/bulk_edit.html.erb"
         end
-      else
-        respond_to do |format|
-          format.html { render :edit_all }
-          format.json { render json: @user_job.errors, status: :unprocessable_entity }
+        format.json do
+          render(json: {job_spec: @job_spec}) unless template_exists? "#{model_class.name.pluralize}/bulk_edit.json.jbuilder"
         end
       end
     end
 
-    # DELETE /${model_type}
-    # DELETE /${model_type}.json
-    def destroy_all
-      @destroy_all_spec = create_destroy_all_spec
-      if @destroy_all_spec.save
-        EzCrudJob.perform_later(@destroy_all_spec.id)
+    # PUT /${model_type}
+    # PUT /${model_type}.json
+    # PATCH /${model_type}
+    # PATCH /${model_type}.json
+    def bulk_update
+      @job_spec = current_job_spec
+      if @job_spec.save
+        EzCrudJob.perform_later(@job_spec.id)
         respond_to do |format|
-          format.html { redirect_to :access_tokens, notice: I18n.t('job_submitted') }
-          format.json { render :show, status: :ok, location: url_for(controller: "", action: "destroy_all") }
+          format.html { redirect_to send("#{model_class.name.underscore}_url"), notice: I18n.t('job_submitted') }
+          format.json { render :show, status: :ok, location: url_for(controller: "", action: "bulk_edit") }
         end
       else
         respond_to do |format|
-          format.html { render :access_tokens }
-          format.json { render json: @access_token_job.errors, status: :unprocessable_entity }
+          format.html { render :bulk_edit }
+          format.json { render json: @job_spec.errors, status: :unprocessable_entity }
         end
       end
     end
@@ -138,6 +167,11 @@ module EzCrud::Helper
 
     def assign_attributes(model)
       model.assign_attributes(model_params)
+      puts "TODO:Need to handle associations"
+      #self.model_class.reflect_on_all_associations
+      #for each has many
+      #ActiveRecord::Reflection::HasManyReflection
+      #ActiveRecord::Reflection::HasAndBelongsToManyReflection
     end
 
     def current_model
@@ -156,27 +190,43 @@ module EzCrud::Helper
       @count ||= current_search.count(model_class.all)
     end
 
-    def create_destroy_all_spec
-      destroy_all_spec = destroy_all_class.new
-      destroy_all_spec.model_type = model_class.name
-      if params[:batch_file]
-        process_file(params[:batch_file], destroy_all_spec, :batch_file)
-      else
-        destroy_all_spec.search = current_search
-      end
-      destroy_all_spec
+
+    def current_job_spec
+      action = params[:action]
+      action = params[:destroy] ? :destroy : :upsert unless action
+      @job_spec ||= case action.to_sym
+                                    when :destroy, :delete
+                                      current_bulk_destroy_spec
+                                    else
+                                      current_bulk_upsert_spec
+                                    end
     end
 
-    def create_update_all_spec
-      update_all_spec = update_all_class.new
-      update_all_spec.model_type = model_class.name
+    def current_bulk_destroy_spec
+      spec = self.class.bulk_destroy_job_spec_class.new
+      spec.model_type = model_class.name
       if params[:batch_file]
-        process_file(params[:batch_file], update_all_spec, :batch_file)
+        process_file(params[:batch_file], spec, :batch_file)
       else
-        update_all_spec.search = current_search
-        update_all_spec.updates = model_params
+        spec.search = current_search
       end
-      update_all_spec
+      spec
+    end
+
+    def current_bulk_upsert_spec
+      spec = self.class.bulk_upsert_job_spec_class.new
+      spec.model_type = model_class.name
+      if params[:batch_file]
+        process_file(params[:batch_file], spec, :batch_file)
+      else
+        spec.search = current_search
+        begin
+          spec.params = model_params.as_json
+        rescue StandardError => e
+          #No action required...
+        end
+      end
+      spec
     end
 
     def process_upload(attr_sym)
@@ -232,25 +282,22 @@ module EzCrud::Helper
                          rescue NameError => e
                            EzCrud::Search
                          end
-      @search_class
     end
 
-    def self.destroy_all_class
-      @destroy_all_class ||= begin
-                           Object.const_get("#{self.name.gsub("Controller", "").singularize}DestroyAllJob")
+    def bulk_destroy_job_spec_class
+      @bulk_destroy_class ||= begin
+                           Object.const_get("#{self.name.gsub("Controller", "").singularize}BulkDestroyJobSpec")
                          rescue NameError => e
-                           EzCrud::DestroyAllJobSpec
+                           EzCrud::BulkDestroyJobSpec
                          end
-      @destroy_all_class
     end
 
-    def self.upsert_all_class
-      @upsert_all_class ||= begin
-                           Object.const_get("#{self.name.gsub("Controller", "").singularize}UpsertAllJob")
+    def bulk_upsert_job_spec_class
+      @bulk_upsert_class ||= begin
+                           Object.const_get("#{self.name.gsub("Controller", "").singularize}BulkUpsertJobSpec")
                          rescue NameError => e
-                           EzCrud::UpdateAllJobSpec
+                           EzCrud::BulkUpsertJobSpec
                          end
-      @upsert_all_class
     end
 
   end

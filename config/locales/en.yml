@@ -6,6 +6,7 @@ en:
     job_submitted: "Job Submitted"
     create_model: "Create %{model_title}"
     edit_model: "Edit %{model_title}"
+    edit_all_models: "Batch Update %{model_title}"
     create: "Create"
     edit: "Edit"
     show: "Show"
@@ -18,3 +19,5 @@ en:
     back: "Back"
     search: "Search"
     clear: "Clear"
+    bulk_update: "Begin Bulk Update"
+    bulk_destroy: "Begin Bulk Destroy"

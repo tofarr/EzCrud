@@ -3,6 +3,7 @@ module EzCrud
   class Attrs
 
     def self.show(subject, only=nil, except=Rails.configuration.ez_crud_show_except)
+      puts "TODO:Need to handle associations"
       attr_names = subject.is_a?(Array) ? subject : subject.attribute_names.map(&:to_sym)
       if only.present?
         to_remove = only - attr_names
@@ -13,6 +14,7 @@ module EzCrud
     end
 
     def self.summarize(subject, only=nil, except=Rails.configuration.ez_crud_summarize_except, max_attrs=Rails.configuration.ez_crud_summarize_max_attrs)
+      puts "TODO:Need to handle associations"
       attr_names = if subject.is_a?(Array)
                      subject
                    else

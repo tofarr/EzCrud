@@ -1,5 +1,5 @@
 module EzCrud
-  class DestroyAllJobSpec < ApplicationRecord
+  class BulkDestroyJobSpec < JobSpec
 
     def process_model(model, params, errors)
       if model

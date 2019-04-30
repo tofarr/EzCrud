@@ -3,6 +3,7 @@ require "ez_crud/attrs"
 attrs = EzCrud::Attrs::show(model_class,
   local_assigns.fetch(:only, nil),
   local_assigns.fetch(:except, Rails.configuration.ez_crud_show_except))
+puts "TODO:Need to handle associations"
 %>
 <div class="show-fields">
   <% attrs.each do |attr| %>
