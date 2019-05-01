@@ -1,3 +1,5 @@
+require "ez_crud/attrs"
+
 module EzCrud::Helper
 
   def self.included base
@@ -103,7 +105,7 @@ module EzCrud::Helper
       @model = current_model
       assign_attributes(@model)
       respond_to do |format|
-        if @model.update(access_token_params)
+        if @model.save
           format.html { redirect_to @model, notice: I18n.t('ez_crud.update_successful') }
           format.json { render :show, status: :ok, location: @model }
         else

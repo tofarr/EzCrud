@@ -54,7 +54,7 @@ module EzCrud
         attrs = subject.attribute_names.map(&:to_sym)
         subject.reflect_on_all_associations.each do |assoc|
           unless assoc.is_a?(ActiveRecord::Reflection::BelongsToReflection)
-            attrs << "#{assoc.name.singularize}_ids".to_sym
+            attrs << "#{assoc.name.to_s.singularize}_ids".to_sym
           end
         end
         @inputs[subject] = attrs unless Rails.env.development?

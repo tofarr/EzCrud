@@ -1,1 +1,9 @@
-<%= render 'components/ez_crud/edit', model_class: @model_class, model: @model %>
+<div class="container edit <%=@model_class.name%>">
+  <%= render 'components/ez_crud/title', title: I18n.t('ez_crud.edit_model', model_title: I18n.t(@model_class.name, default: @model_class.name.titleize)) do %>
+    <div class="ez-crud-menu">
+      <%= link_to I18n.t('ez_crud.back'), send("#{@model_class.name.underscore.pluralize}_path".to_sym), class: "button back-button" %>
+    </div>
+  <% end %>
+
+  <%= render 'components/ez_crud/form', model_class: @model_class, model: @model %>
+</div>

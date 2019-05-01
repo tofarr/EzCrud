@@ -1,10 +1,10 @@
-<%=form_with url: url_for(controller: params[:controller], action: params[:action]), local: true, method: :get do |form| %>
+<%=form_with url: url_for(controller: params[:controller], action: params[:action]), local: true, method: :get, class: "ez-crud-query-form" do |form| %>
   <% search.as_json.symbolize_keys.except(:page_index, :query).each do |key, value|
     unless value.nil? %>
       <%= hidden_field_tag "search[#{key}]", value %>
     <% end %>
   <% end %>
-  <%= form.text_field "search[query]", value: @search.query %>
+  <%= form.text_field "search[query]", value: @search.query, class: 'search' %>
   <%= form.submit I18n.t("ez_crud.search"), class: "button" %>
   <% unless search.default_search? %>
     <%= link_to url_for(controller: params[:controller], action: "index"), class: "button clear-button" do %>

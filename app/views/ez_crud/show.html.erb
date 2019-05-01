@@ -1,1 +1,16 @@
-<%= render 'components/ez_crud/show', model_class: @model_class, model: @model %>
+<div class="container show <%=@model_class.name%>">
+
+  <%= render 'components/ez_crud/title', title: I18n.t(@model_class.name, default: @model_class.name.titleize) do %>
+    <div class="ez-crud-menu">
+      <% if editable?(@model) %>
+        <%= link_to I18n.t('ez_crud.edit'), send("edit_#{@model_class.name.underscore}_path".to_sym, @model), class: "button edit-button" %>
+      <% end %>
+      <%= link_to I18n.t('ez_crud.back'), send("#{@model_class.name.underscore.pluralize}_path".to_sym), class: "button back-button" %>
+    </div>
+  <% end %>
+
+  <%= render 'components/ez_crud/notice', notice: notice %>
+
+  <%= render 'components/ez_crud/show_fields', model_class: @model_class, model: @model %>
+
+</div>

@@ -1,1 +1,25 @@
-<%= render 'components/ez_crud/index', model_class: @model_class, models: @models, search: @search %>
+<%
+require "ez_crud/attrs"
+attrs = EzCrud::Attrs.show(@model_class,
+  local_assigns.fetch(:only, nil),
+  local_assigns.fetch(:except, Rails.configuration.ez_crud_summarize_except))
+if local_assigns.fetch(:header, true)
+  attrs.inject(false) do |comma,attr|
+    concat "," if comma
+    concat attr.to_s.titleize
+    true
+  end
+  concat "\n"
+end
+@models.each do |model|
+  attrs.inject(false) do |comma,attr|
+    concat "," if comma
+    value = model.send(attr)
+    value = value.nil? ? "" : value.to_s
+    value = "\"#{value.gsub('"', '""')}\"" if value.underscore != value
+    concat value.html_safe
+    true
+  end
+  concat "\n"
+end
+%>

@@ -1,1 +1,17 @@
-<%= render 'components/ez_crud/bulk_edit', model_class: @model_class, search: @search %>
+<div class="container bulk-edit <%=@model_class.name%>">
+  <%= render 'components/ez_crud/title', title: I18n.t('ez_crud.edit_all_models', model_title: I18n.t(@model_class.name.pluralize, default: @model_class.name.pluralize.titleize)) do %>
+    <div class="ez-crud-menu">
+      <%= link_to I18n.t('ez_crud.back'), send("#{@model_class.name.underscore.pluralize}_path".to_sym), class: "button back-button" %>
+    </div>
+  <% end %>
+
+  <%=form_with url: url_for(controller: params[:controller], action: "bulk_update"), local: true, method: :put do |form| %>
+    <div class="field level-item-center">
+      <div class="">
+        <%= form.file_field :data, direct_upload: false, class: '' %>
+      </div>
+      <%= form.submit I18n.t("ez_crud.bulk_update"), name: :upsert, class: "button" %>
+      <%= form.submit I18n.t("ez_crud.bulk_destroy"), name: :destroy, class: "button" %>
+    </div>
+  <% end %>
+</div>

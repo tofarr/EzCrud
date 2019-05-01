@@ -11,32 +11,30 @@ attr_types = EzCrud::Attrs.attr_types(model_class)
         <% attrs.each do |attr| %>
           <th><%=I18n.t(attr, default: attr.to_s.titleize)%></th>
         <% end %>
-        <th colspan="3"></th>
+        <th></th>
       </tr>
-    </thead>
+  </thead>
     <tbody>
-      <tbody>
-        <% models.each do |model| %>
-          <tr>
-            <% attrs.each do |attr| %>
-              <td class="<%=attr_types[attr]%>">
-                <%= EzCrud::Html.show(model.send(attr)) %>
-              </td>
-            <% end %>
-            <td>
-              <% if viewable?(model) %>
-                <%= link_to I18n.t("ez_crud.show"), model, class: "button show-button" %>
-              <% end %>
-              <% if editable?(model) %>
-                <%= link_to I18n.t("ez_crud.edit"), send("edit_#{model_class.name.underscore}_path".to_sym, model), class: "button edit-button" %>
-              <% end %>
-              <%if destroyable?(model) %>
-                <%= link_to I18n.t("ez_crud.destroy"), model, method: :delete, class: "button destroy-button", data: { confirm: 'Are you sure?' } %>
-              <% end %>
+      <% models.each do |model| %>
+        <tr>
+          <% attrs.each do |attr| %>
+            <td class="<%=attr_types[attr]%>">
+              <%= EzCrud::Html.show(model.send(attr)) %>
             </td>
-          </tr>
-        <% end %>
-      </tbody>
+          <% end %>
+          <td>
+            <% if viewable?(model) %>
+              <%= link_to I18n.t("ez_crud.show"), model, class: "button show-button" %>
+            <% end %>
+            <% if editable?(model) %>
+              <%= link_to I18n.t("ez_crud.edit"), send("edit_#{model_class.name.underscore}_path".to_sym, model), class: "button edit-button" %>
+            <% end %>
+            <%if destroyable?(model) %>
+              <%= link_to I18n.t("ez_crud.destroy"), model, method: :delete, class: "button destroy-button", data: { confirm: 'Are you sure?' } %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
     </tbody>
   </table>
 

@@ -1,11 +1,12 @@
 <%
 require "ez_crud/attrs"
+require "ez_crud/html"
 attrs = EzCrud::Attrs::show(model_class, local_assigns.fetch(:params, {}))
 attr_types = EzCrud::Attrs.attr_types(model_class)
 %>
 <div class="show-fields">
   <% attrs.each do |attr| %>
-    <div class="field">
+    <div class="field <%=attr%>">
       <label>
         <%=I18n.t(attr, default: attr.to_s.titleize)%>
       </label>

@@ -1,1 +1,20 @@
-<%= render 'components/ez_crud/index', model_class: @model_class, models: @models, search: @search %>
+<div class="container index <%=@model_class.name%>">
+
+  <%= render 'components/ez_crud/title', title: I18n.t(@model_class.name, default: @model_class.name.pluralize.titleize) do %>
+    <div class="ez-crud-menu">
+      <% if creatable? %>
+        <%= link_to I18n.t("ez_crud.create"), send("new_#{@model_class.name.underscore}_path") %>
+      <% end %>
+      <% if bulk_edits? %>
+        <%= link_to I18n.t("ez_crud.bulk_edit"), url_for(action: 'bulk_edit') %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= render 'components/ez_crud/notice', notice: notice %>
+
+  <%= render 'components/ez_crud/query_form', model_class: @model_class, search: @search %>
+
+  <%= render 'components/ez_crud/index_table', model_class: @model_class, models: @models, search: @search %>
+
+</div>
