@@ -10,7 +10,7 @@ attr_types = EzCrud::Attrs.attr_types(model_class)
         <%=I18n.t(attr, default: attr.to_s.titleize)%>
       </label>
       <div class="<%=attr_types[attr]%>">
-        <%= render 'components/ez_crud/value', value: model.send(attr) %>
+        <%= EzCrud::Html.show(model.send(attr)) %>
       </div>
     </div>
   <% end %>

@@ -1,5 +1,6 @@
 <%
 require "ez_crud/attrs"
+require "ez_crud/html"
 attrs = EzCrud::Attrs.summarize(model_class, local_assigns.fetch(:params, {}))
 attr_types = EzCrud::Attrs.attr_types(model_class)
 %>
@@ -19,7 +20,7 @@ attr_types = EzCrud::Attrs.attr_types(model_class)
           <tr>
             <% attrs.each do |attr| %>
               <td class="<%=attr_types[attr]%>">
-                <%= render 'components/ez_crud/value', value: model.send(attr) %>
+                <%= EzCrud::Html.show(model.send(attr)) %>
               </td>
             <% end %>
             <td>
