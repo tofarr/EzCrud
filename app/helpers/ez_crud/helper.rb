@@ -11,6 +11,7 @@ module EzCrud::Helper
     base.send :helper_method, :editable?
     base.send :helper_method, :destroyable?
     base.send :helper_method, :creatable?
+    base.send :helper_method, :bulk_edits?
   end
 
   module InstanceMethods
@@ -18,7 +19,7 @@ module EzCrud::Helper
     # GET /<model_type>
     # GET /<model_type>.json
     def index
-      current_models
+      @models = current_models
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
           render "ez_crud/index.html.erb" unless template_exists? "#{model_class.name.pluralize}/index.html.erb"
@@ -43,7 +44,7 @@ module EzCrud::Helper
     # GET /<model_type>/1
     # GET /<model_type>/1.json
     def show
-      current_model
+      @model = current_model
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
           render "ez_crud/show.html.erb" unless template_exists? "#{model_class.name.pluralize}/show.html.erb"
@@ -69,7 +70,7 @@ module EzCrud::Helper
 
     # GET /access_tokens/1/edit
     def edit
-      current_model
+      @model = current_model
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
           render "ez_crud/edit.html.erb" unless template_exists? "#{model_class.name.pluralize}/edit.html.erb"
@@ -99,6 +100,7 @@ module EzCrud::Helper
     # PATCH/PUT /<model_type>/1
     # PATCH/PUT /<model_type>/1.json
     def update
+      @model = current_model
       assign_attributes(@model)
       respond_to do |format|
         if @model.update(access_token_params)
@@ -114,7 +116,7 @@ module EzCrud::Helper
     # DELETE /${model_type}/1
     # DELETE /${model_type}/1.json
     def destroy
-      @model.destroy
+      current_model.destroy
       respond_to do |format|
         format.html { redirect_to access_tokens_url, notice: I18n.t('ez_crud.destroy_successful') }
         format.json { head :no_content }
@@ -265,6 +267,10 @@ module EzCrud::Helper
       true
     end
 
+    def bulk_edits?
+      true
+    end
+
   end
 
   module ClassMethods
@@ -273,7 +279,7 @@ module EzCrud::Helper
     end
 
     def model_param_names
-      @mode_param_names ||= self.model_class.column_names.map(&:to_sym) - [:id, :created_at, :updated_at]
+      @mode_param_names ||= EzCrud::Attrs.param_names(self.model_class)
     end
 
     def search_class

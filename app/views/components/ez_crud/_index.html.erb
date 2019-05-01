@@ -5,6 +5,9 @@
       <% if creatable? %>
         <%= link_to I18n.t("ez_crud.create"), send("new_#{model_class.name.underscore}_path") %>
       <% end %>
+      <% if bulk_edits? %>
+        <%= link_to I18n.t("ez_crud.bulk_edit"), url_for(action: 'bulk_edit') %>
+      <% end %>
     </div>
   <% end %>
 

@@ -1,10 +1,6 @@
 <%
 require "ez_crud/attrs"
-attrs = EzCrud::Attrs::summarize(model_class,
-  local_assigns.fetch(:only, nil),
-  local_assigns.fetch(:except, Rails.configuration.ez_crud_summarize_except),
-  local_assigns.fetch(:max_attrs, Rails.configuration.ez_crud_summarize_max_attrs))
-puts "TODO:Need to handle associations"  
+attrs = EzCrud::Attrs.summarize(model_class, local_assigns.fetch(:params, {}))
 %>
 <div class="index-container">
   <table class="index-table">

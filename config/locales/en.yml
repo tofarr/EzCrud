@@ -19,5 +19,6 @@ en:
     back: "Back"
     search: "Search"
     clear: "Clear"
+    bulk_edit: "Bulk Edit"
     bulk_update: "Begin Bulk Update"
     bulk_destroy: "Begin Bulk Destroy"
