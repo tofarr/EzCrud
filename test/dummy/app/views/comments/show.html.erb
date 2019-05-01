@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Message:</strong>
+  <%= @model.message %>
+</p>
+
+<p>
+  <strong>Doohickey:</strong>
+  <%= @model.doohickey.title %>
+</p>
+
+<%= link_to 'Edit', edit_comment_path(@model) %> |
+<%= link_to 'Back', comments_path %>

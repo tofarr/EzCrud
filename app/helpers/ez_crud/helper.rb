@@ -22,14 +22,14 @@ module EzCrud::Helper
       @models = current_models
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
-          render "ez_crud/index.html.erb" unless template_exists? "#{model_class.name.pluralize}/index.html.erb"
+          render "ez_crud/index.html.erb" unless template_exists? "#{model_class.name.underscore.pluralize}/index.html.erb"
         end
         format.json do
-          render(json: {search: @search, models: @models}) unless template_exists? "#{model_class.name.pluralize}/index.json.jbuilder"
+          render(json: {search: @search, models: @models}) unless template_exists? "#{model_class.name.underscore.pluralize}/index.json.jbuilder"
         end
         format.csv do
           response.headers['Content-Disposition'] = "attachment; filename=\"#{model_class.name}-#{Date.today}.csv\""
-          render "ez_crud/index.csv.erb" unless template_exists? "#{model_class.name.pluralize}/index.csv.erb"
+          render "ez_crud/index.csv.erb" unless template_exists? "#{model_class.name.underscore.pluralize}/index.csv.erb"
         end
       end
     end
@@ -47,10 +47,10 @@ module EzCrud::Helper
       @model = current_model
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
-          render "ez_crud/show.html.erb" unless template_exists? "#{model_class.name.pluralize}/show.html.erb"
+          render "ez_crud/show.html.erb" unless template_exists? "#{model_class.name.underscore.pluralize}/show.html.erb"
         end
         format.json do
-          render(json: {model: @model}) unless template_exists? "#{model_class.name.pluralize}/show.json.jbuilder"
+          render(json: {model: @model}) unless template_exists? "#{model_class.name.underscore.pluralize}/show.json.jbuilder"
         end
       end
     end
@@ -60,10 +60,10 @@ module EzCrud::Helper
       @model = model_class.new
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
-          render "ez_crud/new.html.erb" unless template_exists? "#{model_class.name.pluralize}/new.html.erb"
+          render "ez_crud/new.html.erb" unless template_exists? "#{model_class.name.underscore.pluralize}/new.html.erb"
         end
         format.json do
-          render(json: {model: @model}) unless template_exists? "#{model_class.name.pluralize}/new.json.jbuilder"
+          render(json: {model: @model}) unless template_exists? "#{model_class.name.underscore.pluralize}/new.json.jbuilder"
         end
       end
     end
@@ -73,10 +73,10 @@ module EzCrud::Helper
       @model = current_model
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
-          render "ez_crud/edit.html.erb" unless template_exists? "#{model_class.name.pluralize}/edit.html.erb"
+          render "ez_crud/edit.html.erb" unless template_exists? "#{model_class.name.underscore.pluralize}/edit.html.erb"
         end
         format.json do
-          render(json: {model: @model}) unless template_exists? "#{model_class.name.pluralize}/edit.json.jbuilder"
+          render(json: {model: @model}) unless template_exists? "#{model_class.name.underscore.pluralize}/edit.json.jbuilder"
         end
       end
     end
@@ -129,10 +129,10 @@ module EzCrud::Helper
       @cjob_spec = current_job_spec
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
-          render "ez_crud/bulk_edit.html.erb" unless template_exists? "#{model_class.name.pluralize}/bulk_edit.html.erb"
+          render "ez_crud/bulk_edit.html.erb" unless template_exists? "#{model_class.name.underscore.pluralize}/bulk_edit.html.erb"
         end
         format.json do
-          render(json: {job_spec: @job_spec}) unless template_exists? "#{model_class.name.pluralize}/bulk_edit.json.jbuilder"
+          render(json: {job_spec: @job_spec}) unless template_exists? "#{model_class.name.underscore.pluralize}/bulk_edit.json.jbuilder"
         end
       end
     end
@@ -274,36 +274,45 @@ module EzCrud::Helper
   end
 
   module ClassMethods
+
+    include EzCrud::Util
+
     def model_class
-      @model_class ||= Object.const_get(self.name.gsub("Controller", "").singularize)
+      cache_var(:@model_class) { Object.const_get(self.name.gsub("Controller", "").singularize) }
     end
 
     def model_param_names
-      @mode_param_names ||= EzCrud::Attrs.param_names(self.model_class)
+      cache_var(:@model_param_names) { EzCrud::Attrs.param_names(self.model_class) }
     end
 
     def search_class
-      @search_class ||= begin
-                           Object.const_get("Search::#{self.name.gsub("Controller", "").singularize}Search")
-                         rescue NameError => e
-                           EzCrud::Search
-                         end
+      cache_var(:@search_class) do
+        begin
+          Object.const_get("Search::#{self.name.gsub("Controller", "").singularize}Search")
+        rescue NameError => e
+          EzCrud::Search
+        end
+      end
     end
 
     def bulk_destroy_job_spec_class
-      @bulk_destroy_class ||= begin
-                           Object.const_get("#{self.name.gsub("Controller", "").singularize}BulkDestroyJobSpec")
-                         rescue NameError => e
-                           EzCrud::BulkDestroyJobSpec
-                         end
+      cache_var(:@bulk_destroy_class) do
+        begin
+          Object.const_get("#{self.name.gsub("Controller", "").singularize}BulkDestroyJobSpec")
+        rescue NameError => e
+          EzCrud::BulkDestroyJobSpec
+        end
+      end
     end
 
     def bulk_upsert_job_spec_class
-      @bulk_upsert_class ||= begin
-                           Object.const_get("#{self.name.gsub("Controller", "").singularize}BulkUpsertJobSpec")
-                         rescue NameError => e
-                           EzCrud::BulkUpsertJobSpec
-                         end
+      cache_var(:@bulk_upsert_class) do
+        begin
+          Object.const_get("#{self.name.gsub("Controller", "").singularize}BulkUpsertJobSpec")
+        rescue NameError => e
+          EzCrud::BulkUpsertJobSpec
+        end
+      end
     end
 
   end

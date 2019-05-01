@@ -1,0 +1,10 @@
+<%= semantic_form_for @model do |f| %>
+  <%= f.inputs do %>
+    <%= f.input :message %>
+    <%= f.input :doohickey_id %>
+  <% end %>
+
+  <%= f.actions do %>
+    <%= f.action :submit, :as => :input %>
+  <% end %>
+<% end %>
