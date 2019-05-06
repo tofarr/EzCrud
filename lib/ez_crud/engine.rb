@@ -16,7 +16,7 @@ module EzCrud
       config.ez_crud_summarize_except = [:id,:created_at]
       config.ez_crud_summarize_except_types = [:text]
       config.ez_crud_summarize_max_attrs = 5
-      config.ez_crud_params_except = [:created_at,:updated_at]
+      config.ez_crud_params_except = [:id,:created_at,:updated_at]
     end
 
   end

@@ -3,9 +3,9 @@
   <%= render 'components/ez_crud/title', title: I18n.t(@model_class.name, default: @model_class.name.titleize) do %>
     <div class="ez-crud-menu">
       <% if editable?(@model) %>
-        <%= link_to I18n.t('ez_crud.edit'), send("edit_#{@model_class.name.underscore}_path".to_sym, @model), class: "button edit-button" %>
+        <%= link_to I18n.t('ez_crud.edit'), send("edit_#{@model_class.name.underscore}_path".to_sym, @model), class: "button edit" %>
       <% end %>
-      <%= link_to I18n.t('ez_crud.back'), send("#{@model_class.name.underscore.pluralize}_path".to_sym), class: "button back-button" %>
+      <%= link_to I18n.t('ez_crud.back'), send("#{@model_class.name.underscore.pluralize}_path".to_sym), class: "button back" %>
     </div>
   <% end %>
 

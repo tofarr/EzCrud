@@ -1,30 +1,76 @@
 require "ez_crud/attrs"
 
+require "ez_crud/handler/to_html_show_handler"
+require "ez_crud/handler/boolean_show_handler"
+require "ez_crud/handler/active_record_show_handler"
+require "ez_crud/handler/enumerable_show_handler"
+require "ez_crud/handler/as_string_show_handler"
+
+require "ez_crud/handler/password_input_handler"
+require "ez_crud/handler/select_input_handler"
+require "ez_crud/handler/checkbox_input_handler"
+require "ez_crud/handler/input_handler"
+
 module EzCrud
   class Html
 
-    @htmlifier = {
-      TrueClass: Proc.new{|v| "<input type='checkbox' disabled='true' class='boolean true' checked='true' />".html_safe },
-      FalseClass: Proc.new{|v| "<input type='checkbox' disabled='true' class='boolean false' />".html_safe }
-    }
+    @show_handlers = [
+      EzCrud::Handler::ToHtmlShowHandler.new,
+      EzCrud::Handler::BooleanShowHandler.new,
+      EzCrud::Handler::ActiveRecordShowHandler.new,
+      EzCrud::Handler::EnumerableShowHandler.new,
+      EzCrud::Handler::AsStringShowHandler.new
+    ]
+    @input_handlers = [
+      EzCrud::Handler::PasswordInputHandler.new,
+      EzCrud::Handler::SelectInputHandler.new,
+      EzCrud::Handler::CheckboxInputHandler.new,
+      EzCrud::Handler::InputHandler.new
+    ]
 
-    def self.register(visualizer, *types)
-      types.each{|type| @htmlifier[type] = visualizer }
+    def self.show_handlers
+      @show_handlers
+    end
+
+    def self.input_handlers
+      @input_handlers
+    end
+
+    def self.show_handler(value)
+      @show_handlers.detect{|handler| handler.match(value) }
     end
 
     def self.show(value)
-      if value.respond_to?(:to_html)
-        value.to_html.html_safe
-      elsif htmlifier = @htmlifier[value.class.name.to_sym]
-        htmlifier.call(value)
-      elsif value.is_a?(ActiveRecord::Base)
-        attr = EzCrud::Attrs.title_attr(value.class)
-        "<div class=\"reference #{value.class.name.underscore}\">#{CGI::escapeHTML(attr ? value.send(attr) : value.to_s)}</div>".html_safe
-      elsif value.is_a?(ActiveRecord::Associations::CollectionProxy)
-        value.inject(StringIO.new){ |output, v| output << self.show(v) }.string.html_safe
-      else
-        value
-      end
+      self.show_handler(value).to_html(value).html_safe
     end
+
+    def self.inputs(model, params={})
+      output=StringIO.new
+      EzCrud::Attrs.param_names(model.class, params).each_with_index do |param, index|
+        id = "#{model.class.name.underscore}_#{index}"
+        input_params = params[param] || {}
+        title = input_params[:title] || self.title_for(param)
+        output << "<div class=\"field\">"
+        output << "<label for=\"#{id}\" class=\"label\">#{title}\</label>"
+        output << self.input(model, param, id, input_params)
+        output << "</div>"
+      end
+      output.string.html_safe
+    end
+
+    def self.input(model, attr, id=nil, params={})
+      @input_handlers.detect{|handler| handler.match(model, attr, params) }.to_html(model, attr, id, params).html_safe
+    end
+
+    def self.title_for(param)
+      param = param.to_s
+      if(param.ends_with?('_ids'))
+        param = param[0...-4].pluralize
+      elsif param.ends_with?('_id')
+        param = param[0...-3]
+      end
+      I18n.t(param, default: param.titleize)
+    end
+
   end
 end

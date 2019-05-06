@@ -24,13 +24,13 @@ attr_types = EzCrud::Attrs.attr_types(model_class)
           <% end %>
           <td>
             <% if viewable?(model) %>
-              <%= link_to I18n.t("ez_crud.show"), model, class: "button show-button" %>
+              <%= link_to I18n.t("ez_crud.show"), model, class: "button show" %>
             <% end %>
             <% if editable?(model) %>
-              <%= link_to I18n.t("ez_crud.edit"), send("edit_#{model_class.name.underscore}_path".to_sym, model), class: "button edit-button" %>
+              <%= link_to I18n.t("ez_crud.edit"), send("edit_#{model_class.name.underscore}_path".to_sym, model), class: "button edit" %>
             <% end %>
             <%if destroyable?(model) %>
-              <%= link_to I18n.t("ez_crud.destroy"), model, method: :delete, class: "button destroy-button", data: { confirm: 'Are you sure?' } %>
+              <%= link_to I18n.t("ez_crud.destroy"), model, method: :delete, class: "button destroy", data: { confirm: 'Are you sure?' } %>
             <% end %>
           </td>
         </tr>

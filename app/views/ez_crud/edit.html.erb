@@ -1,7 +1,8 @@
 <div class="container edit <%=@model_class.name%>">
   <%= render 'components/ez_crud/title', title: I18n.t('ez_crud.edit_model', model_title: I18n.t(@model_class.name, default: @model_class.name.titleize)) do %>
     <div class="ez-crud-menu">
-      <%= link_to I18n.t('ez_crud.back'), send("#{@model_class.name.underscore.pluralize}_path".to_sym), class: "button back-button" %>
+      <%= link_to I18n.t('ez_crud.show'), @model, class: "button show" %>
+      <%= link_to I18n.t('ez_crud.back'), send("#{@model_class.name.underscore.pluralize}_path".to_sym), class: "button back" %>
     </div>
   <% end %>
 
