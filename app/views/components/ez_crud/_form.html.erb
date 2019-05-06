@@ -1,5 +1,7 @@
-<% require "ez_crud/html" %>
-<%= form_with model do |f| %>
+<% require "ez_crud/html"
+puts "TRACE:12345:#{model}"
+%>
+<%= form_with(model: model, local: true) do |f| %>
   <ul>
     <li>For belongs_to need single ajax select</li>
     <li>For has_many/HABTM to need multi ajax select</li>

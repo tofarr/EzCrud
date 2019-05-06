@@ -2,7 +2,7 @@ require "ez_crud/attrs"
 
 module EzCrud
   module Handler
-    class InputHandler
+    class PasswordInputHandler
       def match(model, attr, params)
         EzCrud::Attrs.attr_types(model.class)[attr] == :string && attr.to_s.include?("password")
       end
