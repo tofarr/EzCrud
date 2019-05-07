@@ -28,6 +28,11 @@
             <%= I18n.t(Category.name.underscore, default: Category.name.underscore.pluralize.titleize) %>
           <% end %>
         </li>
+        <li>
+          <%= link_to users_path do %>
+            <%= I18n.t(User.name.underscore, default: User.name.underscore.pluralize.titleize) %>
+          <% end %>
+        </li>
       </ul>
     </nav>
 

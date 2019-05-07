@@ -44,32 +44,16 @@ module EzCrud
       self.show_handler(value).to_html(value).html_safe
     end
 
-    def self.inputs(model, params={})
+    def self.inputs(form, model, params={})
       output=StringIO.new
       EzCrud::Attrs.param_names(model.class, params).each_with_index do |param, index|
-        id = "#{model.class.name.underscore}_#{index}"
-        input_params = params[param] || {}
-        title = input_params[:title] || self.title_for(param)
-        output << "<div class=\"field\">"
-        output << "<label for=\"#{id}\" class=\"label\">#{title}\</label>"
-        output << self.input(model, param, id, input_params)
-        output << "</div>"
+        output << self.input(form, model, param, params[param] || {})
       end
       output.string.html_safe
     end
 
-    def self.input(model, attr, id=nil, params={})
-      @input_handlers.detect{|handler| handler.match(model, attr, params) }.to_html(model, attr, id, params).html_safe
-    end
-
-    def self.title_for(param)
-      param = param.to_s
-      if(param.ends_with?('_ids'))
-        param = param[0...-4].pluralize
-      elsif param.ends_with?('_id')
-        param = param[0...-3]
-      end
-      I18n.t(param, default: param.titleize)
+    def self.input(form, model, attr, params={})
+      @input_handlers.detect{|handler| handler.match(model, attr, params) }.to_html(form, model, attr, params).html_safe
     end
 
   end

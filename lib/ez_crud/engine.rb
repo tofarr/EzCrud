@@ -12,11 +12,11 @@ module EzCrud
 
     initializer :defaults do |app|
       config.ez_crud_max_page_size = 20
-      config.ez_crud_show_except = [:id]
-      config.ez_crud_summarize_except = [:id,:created_at]
+      config.ez_crud_show_except = [:id,:password_digest]
+      config.ez_crud_summarize_except = [:id,:created_at,:password_digest]
       config.ez_crud_summarize_except_types = [:text]
       config.ez_crud_summarize_max_attrs = 5
-      config.ez_crud_params_except = [:id,:created_at,:updated_at]
+      config.ez_crud_params_except = [:id,:created_at,:updated_at,:password_digest]
     end
 
   end

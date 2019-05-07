@@ -1,7 +1,5 @@
-<% require "ez_crud/html"
-puts "TRACE:12345:#{model}"
-%>
-<%= form_with(model: model, local: true) do |f| %>
+<% require "ez_crud/html" %>
+<%= form_with(model: model, local: true) do |form| %>
   <ul>
     <li>For belongs_to need single ajax select</li>
     <li>For has_many/HABTM to need multi ajax select</li>
@@ -12,6 +10,10 @@ puts "TRACE:12345:#{model}"
     <li>For color need color</li>
   </ul>
 
-  <%=EzCrud::Html.inputs(model)%>
+  <%=EzCrud::Html.inputs(form, model, local_assigns.fetch(:input_params, {}))%>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
 
 <% end %>

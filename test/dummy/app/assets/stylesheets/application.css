@@ -12,4 +12,5 @@
  *
  *= require_tree .
  *= require_self
+ *= require ez_crud/application
  */

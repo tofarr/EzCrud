@@ -57,6 +57,10 @@ module EzCrud
             attrs << "#{assoc.name.to_s.singularize}_ids".to_sym
           end
         end
+        if attrs.include? :password_digest
+          attrs << :password
+          attrs << :password_confirmation
+        end
         @inputs[subject] = attrs unless Rails.env.development?
       end
       self.only_except(subject, attrs, params)

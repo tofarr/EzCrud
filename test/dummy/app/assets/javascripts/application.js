@@ -12,4 +12,5 @@
 //
 //= require rails-ujs
 //= require activestorage
+//= require ez_crud/application
 //= require_tree .

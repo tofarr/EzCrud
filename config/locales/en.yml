@@ -11,6 +11,7 @@ en:
     edit: "Edit"
     show: "Show"
     destroy: "Destroy"
+    no_results: "No Results Found"
     first: "First"
     prev: "Previous"
     go: "Go"

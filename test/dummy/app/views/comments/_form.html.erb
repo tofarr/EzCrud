@@ -18,7 +18,7 @@
 
   <div class="field">
     <%= form.label :doohickey %>
-    <%= form.select_field :doohickey, Doohickey.all.collect {|d| [ d.title, d.id ] } %>
+    <%= form.select :doohickey, Doohickey.all.collect {|d| [ d.title, d.id ] } %>
   </div>
 
   <div class="actions">

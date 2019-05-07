@@ -1,15 +1,14 @@
 require "ez_crud/attrs"
+require "ez_crud/handler/input_handler"
 
 module EzCrud
   module Handler
-    class CheckboxInputHandler
+    class CheckboxInputHandler < EzCrud::Handler::InputHandler
       def match(model, attr, params)
         EzCrud::Attrs.attr_types(model.class)[attr] == :boolean
       end
-      def to_html(model, attr, id, params)
-        name = "#{model.class.name.underscore}[#{attr}]"
-        type = EzCrud::Attrs.attr_types(model.class)[attr]
-        "<input type=\"hidden\" name=\"#{name}\" value=\"0\" /><input type=\"checkbox\" name=\"#{name}\" class=\"checkbox-input #{type}\"#{id ? " id=\"#{id}\"" : ""} value=\"1\" checked=\"#{model.send(attr)}\" />"
+      def html_for_input(form, model, attr, id, params)
+        form.check_box attr, class: "checkbox-input"
       end
     end
   end

@@ -1,8 +1,9 @@
 require "ez_crud/attrs"
+require "ez_crud/handler/input_handler"
 
 module EzCrud
   module Handler
-    class SelectInputHandler
+    class SelectInputHandler < EzCrud::Handler::InputHandler
 
       def match(model, attr, params)
         return true if params[:options]
@@ -21,9 +22,12 @@ module EzCrud
         model.class.reflect_on_all_associations.detect { |assoc| assoc.name == attr }
       end
 
-      def to_html(model, attr, id, params)
+      def html_for_input(form, model, attr, id, params)
         assoc = attr_assoc(model, attr)
-        "<select class=\"#{css_class(attr, assoc, params)}\" id=\"#{id}\" name=\"#{model.class.name.underscore}[#{attr}]\" #{multi?(assoc, params) ? "multiple=\"multiple\"" : ""}>#{options(model, attr, assoc, params)}</select>"
+        input_params = { multiple: multi?(assoc, params), class: css_class(attr, assoc, params) }
+        input_params["data-store"] = params[:data_store] || assoc.klass.name.pluralize.underscore unless params[:no_ajax]
+        input_params["data-exclude-ids"] = params[:exclude_ids] if params[:exclude_ids]
+        form.select attr, options(model, attr, assoc, params), {}, input_params
       end
 
       def multi?(assoc, params)
@@ -43,14 +47,14 @@ module EzCrud
           options = assoc.klass.all
           options = options.where(id: ids) unless params[:no_ajax]
         end
-        buffer = StringIO.new
         title_attr = assoc ? EzCrud::Attrs.title_attr(assoc.klass) : nil
+        ret = []
         options.each do |option|
           id = opt_id(option)
           title = opt_title(option, title_attr)
-          buffer << "<option value=\"#{id}\"#{ids.include?(id) ? " selected" : ""}>#{CGI::escapeHTML(title)}</option>"
+          ret << [title, ids.include?(id), id]
         end
-        buffer.string
+        ret
       end
 
       def opt_id(option)

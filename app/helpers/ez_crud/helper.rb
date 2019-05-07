@@ -57,7 +57,7 @@ module EzCrud::Helper
       end
     end
 
-    # GET /access_tokens/new
+    # GET /${model_type}/new
     def new
       @model = model_class.new
       respond_to do |format|
@@ -70,7 +70,7 @@ module EzCrud::Helper
       end
     end
 
-    # GET /access_tokens/1/edit
+    # GET /${model_type}/1/edit
     def edit
       @model = current_model
       respond_to do |format|
@@ -93,7 +93,11 @@ module EzCrud::Helper
           format.html { redirect_to @model, notice: I18n.t('ez_crud.create_successful') }
           format.json { render :show, status: :created, location: @model }
         else
-          format.html { render :new }
+          format.html {
+            template = "#{model_class.name.underscore.pluralize}/new.html.erb"
+            template = "ez_crud/new.html.erb" unless template_exists? template
+            render template
+          }
           format.json { render json: @model.errors, status: :unprocessable_entity }
         end
       end
@@ -109,7 +113,11 @@ module EzCrud::Helper
           format.html { redirect_to @model, notice: I18n.t('ez_crud.update_successful') }
           format.json { render :show, status: :ok, location: @model }
         else
-          format.html { render :edit }
+          format.html {
+            template = "#{model_class.name.underscore.pluralize}/edit.html.erb"
+            template = "ez_crud/edit.html.erb" unless template_exists? template
+            render template
+          }
           format.json { render json: @model.errors, status: :unprocessable_entity }
         end
       end
@@ -120,7 +128,7 @@ module EzCrud::Helper
     def destroy
       current_model.destroy
       respond_to do |format|
-        format.html { redirect_to access_tokens_url, notice: I18n.t('ez_crud.destroy_successful') }
+        format.html { redirect_to :index, notice: I18n.t('ez_crud.destroy_successful') }
         format.json { head :no_content }
       end
     end
@@ -171,11 +179,6 @@ module EzCrud::Helper
 
     def assign_attributes(model)
       model.assign_attributes(model_params)
-      puts "TODO:Need to handle associations"
-      #self.model_class.reflect_on_all_associations
-      #for each has many
-      #ActiveRecord::Reflection::HasManyReflection
-      #ActiveRecord::Reflection::HasAndBelongsToManyReflection
     end
 
     def current_model

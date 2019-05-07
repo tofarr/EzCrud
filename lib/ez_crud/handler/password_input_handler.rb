@@ -1,13 +1,15 @@
 require "ez_crud/attrs"
+require "ez_crud/handler/input_handler"
 
 module EzCrud
   module Handler
-    class PasswordInputHandler
+    class PasswordInputHandler < EzCrud::Handler::InputHandler
       def match(model, attr, params)
-        EzCrud::Attrs.attr_types(model.class)[attr] == :string && attr.to_s.include?("password")
+        attr.to_s.include? "password"
       end
-      def to_html(model, attr, id, params)
-        "<input type=\"password\" name=\"#{model.class.name.underscore}[#{attr}]\" class=\"text-input password\"#{id ? " id=\"#{id}\"" : ""} value=\"#{CGI::escapeHTML(model.send(attr).to_s)}\" />"
+
+      def html_for_input(form, model, attr, id, params)
+        form.password_field attr, class: "text-input password-input", id: id
       end
     end
   end
