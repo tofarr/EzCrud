@@ -24,7 +24,7 @@ else
         <% results.each do |model| %>
           <tr>
             <% attrs.each do |attr| %>
-              <td class="<%=attr_types[attr]%>">
+              <td class="show-field <%=attr%> <%=attr_types[attr]%>">
                 <%= EzCrud::Html.show(model.send(attr)) %>
               </td>
             <% end %>

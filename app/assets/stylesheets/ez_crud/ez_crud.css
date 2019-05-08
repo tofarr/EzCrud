@@ -31,7 +31,8 @@ input:focus,textarea:focus,select:focus{
 }
 
 input[type=color]{
-  height: 1.5rem;
+  width: 3rem;
+  height: 2rem;
   padding: 0;
 }
 
@@ -98,6 +99,16 @@ input[type=color]{
 
 .index-table tbody tr:nth-child(odd){
   background: #EEE;
+}
+
+.index-table th.string,
+.index-table th.datetime{
+  text-align: left;
+}
+
+.index-table th.integer,
+.index-table th.float{
+  text-align: right;
 }
 
 .index-table td,
@@ -184,6 +195,19 @@ input[type=color]{
   text-align: center;
   max-width: 800px;
   animation: .4s linear fadein;
+}
+
+.reference{
+  border: 1px solid #06C;
+  padding: 0.3rem;
+  border-radius: 0.3rem;
+  text-align: center;
+  margin: 0.1rem;
+}
+
+.color-swatch{
+  width: 3rem;
+  height: 2rem;
 }
 
 @media only screen and (max-width: 600px) {

@@ -10,7 +10,7 @@ attr_types = EzCrud::Attrs.attr_types(model_class)
       <label class="label">
         <%=I18n.t(attr, default: attr.to_s.titleize)%>
       </label>
-      <div class="<%=attr_types[attr]%>">
+      <div class="show-field <%=attr%> <%=attr_types[attr]%>">
         <%= EzCrud::Html.show(model.send(attr)) %>
       </div>
     </div>

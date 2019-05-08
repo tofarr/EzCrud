@@ -5,4 +5,9 @@ $(document).on('ready page:load', function(){
       $(this).removeClass('text-input');
     }
   });
+  $('.show-field').each(function(){
+    if((this.className || '').toLowerCase().indexOf('color') >= 0){
+      $(this).addClass('color-swatch').css('background-color', $(this).html()).empty('')
+    }
+  })
 });
