@@ -72,9 +72,9 @@ module EzCrud
       if params[:except_types].present?
         attr_types = self.attr_types(subject)
         params[:except_types].each do |type|
-          attrs.reject do |attr|
-            type = attr_types[attr]
-            type && params[:except_types].include?(type)
+          attrs = attrs.reject do |attr|
+            t = attr_types[attr]
+            t && params[:except_types].include?(t)
           end
         end
       end

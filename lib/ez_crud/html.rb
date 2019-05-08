@@ -6,6 +6,7 @@ require "ez_crud/handler/active_record_show_handler"
 require "ez_crud/handler/enumerable_show_handler"
 require "ez_crud/handler/as_string_show_handler"
 
+require "ez_crud/handler/text_area_handler"
 require "ez_crud/handler/password_input_handler"
 require "ez_crud/handler/select_input_handler"
 require "ez_crud/handler/checkbox_input_handler"
@@ -22,6 +23,7 @@ module EzCrud
       EzCrud::Handler::AsStringShowHandler.new
     ]
     @input_handlers = [
+      EzCrud::Handler::TextAreaHandler.new,
       EzCrud::Handler::PasswordInputHandler.new,
       EzCrud::Handler::SelectInputHandler.new,
       EzCrud::Handler::CheckboxInputHandler.new,

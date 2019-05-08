@@ -15,7 +15,7 @@ else
       <thead>
         <tr>
           <% attrs.each do |attr| %>
-            <th><%=I18n.t(attr, default: attr.to_s.titleize)%></th>
+            <th class="<%=attr_types[attr]%>"><%=I18n.t(attr, default: attr.to_s.titleize)%></th>
           <% end %>
           <th></th>
         </tr>
@@ -28,16 +28,18 @@ else
                 <%= EzCrud::Html.show(model.send(attr)) %>
               </td>
             <% end %>
-            <td>
-              <% if viewable?(model) %>
-                <%= link_to I18n.t("ez_crud.show"), model, class: "button show" %>
-              <% end %>
-              <% if editable?(model) %>
-                <%= link_to I18n.t("ez_crud.edit"), send("edit_#{model_class.name.underscore}_path".to_sym, model), class: "button edit" %>
-              <% end %>
-              <%if destroyable?(model) %>
-                <%= link_to I18n.t("ez_crud.destroy"), model, method: :delete, class: "button destroy", data: { confirm: 'Are you sure?' } %>
-              <% end %>
+            <td class="action-cell">
+              <div class="actions">
+                <% if viewable?(model) %>
+                  <%= link_to I18n.t("ez_crud.show"), model, class: "button show" %>
+                <% end %>
+                <% if editable?(model) %>
+                  <%= link_to I18n.t("ez_crud.edit"), send("edit_#{model_class.name.underscore}_path".to_sym, model), class: "button edit" %>
+                <% end %>
+                <%if destroyable?(model) %>
+                  <%= link_to I18n.t("ez_crud.destroy"), model, method: :delete, class: "button destroy", data: { confirm: 'Are you sure?' } %>
+                <% end %>
+              </div>
             </td>
           </tr>
         <% end %>

@@ -17,6 +17,7 @@ module EzCrud
       config.ez_crud_summarize_except_types = [:text]
       config.ez_crud_summarize_max_attrs = 5
       config.ez_crud_params_except = [:id,:created_at,:updated_at,:password_digest]
+      config.es_crud_markdown = true
     end
 
   end

@@ -17,7 +17,7 @@ module EzCrud
 
       def field_html(model, attr, params, &block)
         id = id_for(model, attr)
-        "<div class=\"field\"><label for=\"#{id}\" class=\"label\">#{params[:title] || title_for(attr)}\</label>#{yield id}</div>"
+        "<div class=\"field\"><label for=\"#{id}\" class=\"label\">#{params[:title] || title_for(attr)}\</label><div class=\"input\">#{yield id}</div></div>"
       end
 
       def id_for(model, attr)

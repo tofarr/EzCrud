@@ -1,0 +1,19 @@
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background-color: #06C;
+  border: 1px solid #CCC;
+  color: #FFF;
+  font-size: 0.7rem;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+  color: #FFF;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true]{
+  background: #FFF;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected]{
+  background: #06C;
+  color: #FFF;
+}

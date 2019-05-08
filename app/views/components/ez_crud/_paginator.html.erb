@@ -1,4 +1,4 @@
-<%=tag.div class: "ez-crud-paginator" do %>
+<%=tag.div class: "paginator" do %>
   <% num_pages = local_assigns.fetch(:num_pages, nil) || search.num_pages(model_class.all)
   if num_pages > 1 %>
 
@@ -16,8 +16,8 @@
           <%= hidden_field_tag "search[#{key}]", value %>
         <% end %>
       <% end %>
-      <%= form.select "search[page_index]", (0...num_pages).map{|n| [n+1,n]}, selected: search.page_index, class: "page-select" %>
-      <%= form.submit I18n.t("ez_crud.go"), class: "button" %>
+      <%= form.select "search[page_index]", (0...num_pages).map{|n| [n+1,n]}, {selected: search.page_index}, {class: "page-select select-input"} %>
+      <%= form.submit I18n.t("ez_crud.go"), class: "go-button button" %>
     <% end %>
 
     <% if search.page_index < (num_pages - 2) %>

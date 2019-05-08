@@ -1,11 +1,17 @@
 <% require "ez_crud/html" %>
-<%= form_with(model: model, local: true) do |form| %>
+
+<% if model.errors.any? %>
+  <ul class="errors">
+  <% model.errors.full_messages.each do |message| %>
+    <li class="error"><%= message %></li>
+  <% end %>
+  </ul>
+<% end %>
+
+<%= form_with(model: model, local: true, class: "form") do |form| %>
   <ul>
-    <li>For belongs_to need single ajax select</li>
-    <li>For has_many/HABTM to need multi ajax select</li>
     <li>For for image file need image file upload</li>
     <li>For for file need file upload</li>
-    <li>For Text need markdown</li>
     <li>For Timestamp need datetime</li>
     <li>For color need color</li>
   </ul>
@@ -13,7 +19,7 @@
   <%=EzCrud::Html.inputs(form, model, local_assigns.fetch(:input_params, {}))%>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit class: "button" %>
   </div>
 
 <% end %>
