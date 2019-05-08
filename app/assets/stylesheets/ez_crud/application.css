@@ -14,5 +14,7 @@
  *= require select2
  *= require_tree .
  *= require simplemde-1.11.2.min
+ *= require flatpickr
+ *= require flatpickr/material_blue
  *= require ez_crud/ez_crud
  */

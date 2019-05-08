@@ -88,6 +88,8 @@ ActiveRecord::Schema.define(version: 2019_05_06_131958) do
     t.string "email"
     t.string "homepage"
     t.string "password_digest"
+    t.datetime "dob"
+    t.string "favorite_color"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -25,3 +25,6 @@ gem "jquery-rails", "~> 4.3"
 
 # Added at 2019-05-07 10:46:09 -0600 by tofarr:
 gem "select2-rails", "~> 4.0"
+
+# Added at 2019-05-08 08:52:34 -0600 by tofarr:
+gem "flatpickr_rails", "~> 1.1"

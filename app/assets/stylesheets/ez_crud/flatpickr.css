@@ -1,0 +1,8 @@
+div.flatpickr-month,div.flatpickr-weekdays,div.flatpickr-weekdays span.flatpickr-weekday,span.flatpickr-day.selected{
+  background: #06C;
+  border-color: #06C;
+  color: #FFF;
+}
+span.flatpickr-prev-month:hover svg, span.flatpickr-next-month:hover svg{
+  fill: #FFF;
+}

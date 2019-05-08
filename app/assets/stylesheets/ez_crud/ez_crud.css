@@ -19,8 +19,8 @@ div,label,input,textarea,select{
 }
 
 input,textarea,select{
-  font-size: 1rem;
-  padding: 0.2rem;
+  font-size: 0.9rem;
+  padding: 0.4rem;
   border: 1px solid #CCC;
   border-radius: 0.5rem;
 }
