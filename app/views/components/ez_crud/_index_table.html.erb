@@ -15,7 +15,7 @@ else
       <thead>
         <tr>
           <% attrs.each do |attr| %>
-            <th class="<%=attr_types[attr]%>"><%=I18n.t(attr, default: attr.to_s.titleize)%></th>
+            <th class="<%=attr_types[attr].to_s.underscore.gsub('/','_')%>"><%=I18n.t(attr, default: attr.to_s.titleize)%></th>
           <% end %>
           <th></th>
         </tr>

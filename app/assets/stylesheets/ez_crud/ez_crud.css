@@ -165,6 +165,51 @@ input[type=color]{
   outline-style: none;
 }
 
+.form-upload{
+  border: 1px solid #CCC;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-upload .destroy,
+.form-upload .file-input-container
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  width: 100%;
+  border: 1px solid #CCC;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-upload .file-input{
+  border: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+.active_storage_attachment{
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-image{
+  max-width: 100%;
+  height: auto
+}
+
 .query-form{
   display: flex;
   flex-direction: row;
