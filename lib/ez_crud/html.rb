@@ -3,6 +3,7 @@ require "ez_crud/attrs"
 require "ez_crud/handler/attachment_show_handler"
 require "ez_crud/handler/to_html_show_handler"
 require "ez_crud/handler/boolean_show_handler"
+require "ez_crud/handler/datetime_show_handler"
 require "ez_crud/handler/active_record_show_handler"
 require "ez_crud/handler/enumerable_show_handler"
 require "ez_crud/handler/as_string_show_handler"
@@ -21,6 +22,7 @@ module EzCrud
       EzCrud::Handler::AttachmentShowHandler.new,
       EzCrud::Handler::ToHtmlShowHandler.new,
       EzCrud::Handler::BooleanShowHandler.new,
+      EzCrud::Handler::DatetimeShowHandler.new,
       EzCrud::Handler::ActiveRecordShowHandler.new,
       EzCrud::Handler::EnumerableShowHandler.new,
       EzCrud::Handler::AsStringShowHandler.new

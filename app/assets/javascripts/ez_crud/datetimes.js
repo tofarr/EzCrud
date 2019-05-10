@@ -5,7 +5,7 @@ $(document).on('ready page:load', function(){
     if(!timestamp){
       return;
     }
-    timestamp = moment(timestamp);
+    timestamp = moment(timestamp.trim());
     if(!timestamp.isValid()){
       return;
     }
