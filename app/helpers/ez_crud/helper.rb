@@ -179,6 +179,10 @@ module EzCrud::Helper
 
     def assign_attributes(model)
       model.assign_attributes(model_params)
+      self.class.model_attachment_names.each do |attr|
+        process_upload(attr)
+      end
+      model
     end
 
     def current_model
@@ -237,12 +241,12 @@ module EzCrud::Helper
     end
 
     def process_upload(attr_sym)
-      if params[:model]["destroy_#{attr_sym}".to_sym]
+      if params[model_class.name.underscore]["destroy_#{attr_sym}".to_sym]
         attr = current_model.send(attr_sym)
         attr.purge if attr.attached?
         return
       end
-      f = params[:model][attr_sym]
+      f = params[model_class.name.underscore][attr_sym]
       process_file(f, current_model, attr_sym) if f
     end
 
@@ -287,7 +291,21 @@ module EzCrud::Helper
     end
 
     def model_param_names
-      cache_var(:@model_param_names) { EzCrud::Attrs.param_names(self.model_class) }
+      cache_var(:@model_param_names) do
+        types = EzCrud::Attrs.attr_types(self.model_class)
+        EzCrud::Attrs.param_names(self.model_class).reject do |attr|
+          types[attr] == ActiveStorage::Attachment
+        end
+      end
+    end
+
+    def model_attachment_names
+      cache_var(:@model_attachment_names) do
+        types = EzCrud::Attrs.attr_types(self.model_class)
+        EzCrud::Attrs.param_names(self.model_class).select do |attr|
+          types[attr] == ActiveStorage::Attachment
+        end
+      end
     end
 
     def search_class

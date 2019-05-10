@@ -33,7 +33,10 @@ module EzCrud
         return attrs if attrs
         attrs = subject.attribute_names.map(&:to_sym)
         subject.reflect_on_all_associations.each do |assoc|
-          if assoc.is_a?(ActiveRecord::Reflection::BelongsToReflection)
+          next if assoc.options[:class_name] == 'ActiveStorage::Blob'
+          if assoc.options[:class_name] == 'ActiveStorage::Attachment' && assoc.name.to_s.ends_with?("_attachment")
+            attrs << assoc.name.to_s.gsub("_attachment","").to_sym
+          elsif assoc.is_a?(ActiveRecord::Reflection::BelongsToReflection)
             attrs[attrs.index(assoc.foreign_key.to_sym)] = assoc.name
           else
             attrs << assoc.name
@@ -53,7 +56,11 @@ module EzCrud
         return attrs if attrs
         attrs = subject.attribute_names.map(&:to_sym)
         subject.reflect_on_all_associations.each do |assoc|
-          unless assoc.is_a?(ActiveRecord::Reflection::BelongsToReflection)
+          if assoc.options[:class_name] == 'ActiveStorage::Blob'
+            next
+          elsif assoc.options[:class_name] == 'ActiveStorage::Attachment' && assoc.name.to_s.ends_with?("_attachment")
+            attrs << assoc.name.to_s.gsub("_attachment","").to_sym
+          elsif !assoc.is_a?(ActiveRecord::Reflection::BelongsToReflection)
             attrs << "#{assoc.name.to_s.singularize}_ids".to_sym
           end
         end
@@ -92,7 +99,15 @@ module EzCrud
         return ret if ret
         ret = {}
         subject.attribute_types.each { |k, v| ret[k.to_sym] = v.type }
-        subject.reflect_on_all_associations.each { |assoc| ret[assoc.name] = assoc.klass.name.underscore.to_sym }
+        subject.reflect_on_all_associations.each do |assoc|
+          if assoc.options[:class_name] == 'ActiveStorage::Blob'
+            next
+          elsif assoc.options[:class_name] == 'ActiveStorage::Attachment' && assoc.name.to_s.ends_with?("_attachment")
+            ret[assoc.name.to_s.gsub("_attachment","").to_sym] = ActiveStorage::Attachment
+          else
+            ret[assoc.name] = assoc.klass.name.underscore.to_sym
+          end
+        end
         @types[subject] = ret unless Rails.env.development?
         ret
       end
