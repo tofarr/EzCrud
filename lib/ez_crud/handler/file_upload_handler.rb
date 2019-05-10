@@ -20,12 +20,19 @@ module EzCrud
 
         checkbox = ""
         if value.attachment
-          id = id_for(model, "destroy_#{attr}")
-          checkbox = "<div class=\"destroy\"><input type=\"checkbox\" id=\"#{id}\" name=\"#{model.class.name.underscore}[destroy_#{attr}]\" /><label for=\"#{id}\">#{I18n.t("destroy_#{attr}", default: "Delete #{attr.to_s.titleize}")}</label></div>"
+          destroy_id = id_for(model, "destroy_#{attr}")
+          checkbox = "<div class=\"destroy\"><input type=\"checkbox\" id=\"#{destroy_id}\" name=\"#{model.class.name.underscore}[destroy_#{attr}]\" /><label for=\"#{destroy_id}\">#{I18n.t("destroy_#{attr}", default: "Delete #{attr.to_s.titleize}")}</label></div>"
         end
 
+        file_params = {direct_upload: false, id: id, class: 'file-input'};
         ct = content_type(model.class, attr)
-        input = form.file_field attr, {direct_upload: false, class: 'file-input', "data-content-type": ct}
+        file_params["data-content-type"] = ct if ct
+        preferred_size = model.respond_to?(:preferred_size_for) ? model.preferred_size_for(attr) : nil
+        if preferred_size
+          file_params["data-preferred-width"] = preferred_size[0]
+          file_params["data-preferred-height"] = preferred_size[1]
+        end
+        input = form.file_field attr, file_params
 
         "<div class=\"form-upload\">#{show}#{checkbox}<div class=\"file-input-container\">#{input}</div></div>"
       end

@@ -175,6 +175,10 @@ input[type=color]{
   align-items: center;
 }
 
+.form-upload .upload-image{
+  margin-bottom: 0.5rem;
+}
+
 .form-upload .destroy,
 .form-upload .file-input-container
 {
@@ -201,7 +205,6 @@ input[type=color]{
   max-width: 600px;
   display: flex;
   flex-direction: row;
-  justify-content: center;
   align-items: center;
 }
 
