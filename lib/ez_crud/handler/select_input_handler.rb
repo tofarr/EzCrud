@@ -7,7 +7,8 @@ module EzCrud
 
       def match(model, attr, params)
         return true if params[:options]
-        attr_assoc(model, attr).present?
+        return true if attr_assoc(model, attr).present?
+        model.class.validators_on(attr).detect{|v|v.is_a?(ActiveModel::Validations::InclusionValidator)}.present?
       end
 
       def attr_assoc(model, attr)
@@ -25,7 +26,13 @@ module EzCrud
       def html_for_input(form, model, attr, id, params)
         assoc = attr_assoc(model, attr)
         input_params = { multiple: multi?(assoc, params), class: css_class(attr, assoc, params) }
-        input_params["data-store"] = params[:data_store] || assoc.klass.name.pluralize.underscore unless params[:no_ajax]
+        unless params[:no_ajax]
+          if params[:data_store]
+            input_params["data-store"] = params[:data_store]
+          elsif assoc
+            input_params["data-store"] = assoc.klass.name.pluralize.underscore
+          end
+        end
         input_params["data-exclude-ids"] = params[:exclude_ids] if params[:exclude_ids]
         form.select attr, options(model, attr, assoc, params), {}, input_params
       end
@@ -44,8 +51,13 @@ module EzCrud
         if params[:options]
           options = params[:options]
         else
-          options = assoc.klass.all
-          options = options.where(id: ids) unless params[:no_ajax]
+          validator = model.class.validators_on(attr).detect{|v|v.is_a?(ActiveModel::Validations::InclusionValidator)}
+          if validator
+            options = validator.options[:in]
+          else
+            options = assoc.klass.all
+            options = options.where(id: ids) unless params[:no_ajax]
+          end
         end
         title_attr = assoc ? EzCrud::Attrs.title_attr(assoc.klass) : nil
         ret = []
@@ -58,12 +70,15 @@ module EzCrud
       end
 
       def opt_id(option)
-        return option.is_a?(Array) ? (option[1] || option[0]) : option.id
+        return option[1] || option[0] if option.is_a?(Array)
+        return option if option.is_a?(String) || option.is_a?(Symbol)
+        return option.id
       end
 
       def opt_title(option, title_attr)
         return option[0] if option.is_a?(Array)
         return option.send(title_attr) if title_attr
+        return I18n.t(option, default: option.to_s.titleize) if option.is_a?(Symbol) || option.is_a?(String)
         option.to_s
       end
     end

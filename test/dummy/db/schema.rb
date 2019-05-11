@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_131958) do
     t.string "password_digest"
     t.datetime "dob"
     t.string "favorite_color"
+    t.string "dinner_choice"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

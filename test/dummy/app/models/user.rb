@@ -8,6 +8,8 @@ class User < ApplicationRecord
 
   validates :avatar, allow_blank: true, blob: { content_type: :image }
 
+  validates :dinner_choice, presence: true, inclusion: { in: %w(chicken fish vegan) }
+
   def preferred_size_for(attr)
     return attr == :avatar ? [256, 256] : nil
   end
