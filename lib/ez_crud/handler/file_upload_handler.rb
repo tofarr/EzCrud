@@ -18,11 +18,8 @@ module EzCrud
         value = model.send(attr)
         show = @show_handler.to_html(value)
 
-        checkbox = ""
-        if value.attachment
-          destroy_id = id_for(model, "destroy_#{attr}")
-          checkbox = "<div class=\"destroy\"><input type=\"checkbox\" id=\"#{destroy_id}\" name=\"#{model.class.name.underscore}[destroy_#{attr}]\" /><label for=\"#{destroy_id}\">#{I18n.t("destroy_#{attr}", default: "Delete #{attr.to_s.titleize}")}</label></div>"
-        end
+        destroy_id = id_for(model, "destroy_#{attr}")
+        checkbox = "<div class=\"destroy\"#{value.attachment ? "" : " style=\"display:none\""}><input type=\"checkbox\" id=\"#{destroy_id}\" name=\"#{model.class.name.underscore}[destroy_#{attr}]\" /><label for=\"#{destroy_id}\">#{I18n.t("destroy_#{attr}", default: "Delete #{attr.to_s.titleize}")}</label></div>"
 
         file_params = {direct_upload: false, id: id, class: 'file-input'};
         ct = content_type(model.class, attr)
@@ -34,7 +31,7 @@ module EzCrud
         end
         input = form.file_field attr, file_params
 
-        "<div class=\"form-upload\">#{show}#{checkbox}<div class=\"file-input-container\">#{input}</div></div>"
+        "<div class=\"form-upload\"><div class=\"preview\">#{show}</div>#{checkbox}<div class=\"file-input-container\">#{input}</div></div>"
       end
 
       def content_type(model_class, attr)

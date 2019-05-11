@@ -258,6 +258,11 @@ input[type=color]{
   height: 2rem;
 }
 
+.upload-image,
+.cr-boundary{
+  border: 1px solid #CCC;
+}
+
 @media only screen and (max-width: 600px) {
   body {
     margin: 12px;

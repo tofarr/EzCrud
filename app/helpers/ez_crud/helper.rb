@@ -1,4 +1,6 @@
 require "ez_crud/attrs"
+require 'data_uri'
+require 'mime-types'
 
 module EzCrud::Helper
 

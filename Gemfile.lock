@@ -55,6 +55,7 @@ GEM
     builder (3.2.3)
     concurrent-ruby (1.1.5)
     crass (1.0.4)
+    data_uri (0.1.0)
     erubi (1.8.0)
     flatpickr_rails (1.1.0)
       railties (>= 3.0)
@@ -74,6 +75,9 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (0.9.2)
+    mime-types (3.2.2)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2019.0331)
     mimemagic (0.3.3)
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
@@ -133,9 +137,11 @@ PLATFORMS
 DEPENDENCIES
   activestorage-validator (~> 0.1.2)
   bcrypt (~> 3.1)
+  data_uri (~> 0.1.0)
   ez_crud!
   flatpickr_rails (~> 1.1)
   jquery-rails (~> 4.3)
+  mime-types (~> 3.2)
   select2-rails (~> 4.0)
   sqlite3
 

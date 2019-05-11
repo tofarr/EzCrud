@@ -28,3 +28,9 @@ gem "select2-rails", "~> 4.0"
 
 # Added at 2019-05-08 08:52:34 -0600 by tofarr:
 gem "flatpickr_rails", "~> 1.1"
+
+# Added at 2019-05-10 14:10:17 -0600 by tofarr:
+gem "data_uri", "~> 0.1.0"
+
+# Added at 2019-05-10 14:11:00 -0600 by tofarr:
+gem "mime-types", "~> 3.2"
