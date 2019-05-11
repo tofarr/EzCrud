@@ -26,6 +26,13 @@ Gem::Specification.new do |spec|
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
   spec.add_dependency "rails", "~> 5.2.3"
+  spec.add_dependency "bcrypt", "~> 3.1"
+  spec.add_dependency "activestorage-validator", "~> 0.1.2"
+  spec.add_dependency "jquery-rails", "~> 4.3"
+  spec.add_dependency "select2-rails", "~> 4.0"
+  spec.add_dependency "flatpickr_rails", "~> 1.1"
+  spec.add_dependency "data_uri", "~> 0.1.0"
+  spec.add_dependency "mime-types", "~> 3.2"
 
   spec.add_development_dependency "sqlite3"
 end

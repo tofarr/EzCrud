@@ -1,5 +1,3 @@
-require "data_uri"
-
 module EzCrud
   class Engine < ::Rails::Engine
     isolate_namespace EzCrud
