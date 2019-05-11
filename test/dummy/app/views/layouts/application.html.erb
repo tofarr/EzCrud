@@ -14,22 +14,22 @@
     <nav>
       <ul>
         <li>
-          <%= link_to doohickeys_path do %>
+          <%= link_to doohickeys_path {}, {class: "button"} do %>
             <%= I18n.t(Doohickey.name.underscore, default: Doohickey.name.underscore.pluralize.titleize) %>
           <% end %>
         </li>
         <li>
-          <%= link_to comments_path do %>
+          <%= link_to comments_path {}, {class: "button"} do %>
             <%= I18n.t(Comment.name.underscore, default: Comment.name.underscore.pluralize.titleize) %>
           <% end %>
         </li>
         <li>
-          <%= link_to categories_path do %>
+          <%= link_to categories_path {}, {class: "button"} do %>
             <%= I18n.t(Category.name.underscore, default: Category.name.underscore.pluralize.titleize) %>
           <% end %>
         </li>
         <li>
-          <%= link_to users_path do %>
+          <%= link_to users_path {}, {class: "button"} do %>
             <%= I18n.t(User.name.underscore, default: User.name.underscore.pluralize.titleize) %>
           <% end %>
         </li>

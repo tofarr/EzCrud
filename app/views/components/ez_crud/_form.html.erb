@@ -17,7 +17,7 @@
   <%=EzCrud::Html.inputs(form, model, local_assigns.fetch(:input_params, {}))%>
 
   <div class="actions">
-    <%= form.submit class: "button" %>
+    <%= form.submit class: "button #{model.id ? "edit" : "create"}" %>
   </div>
 
 <% end %>

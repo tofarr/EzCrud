@@ -263,6 +263,13 @@ input[type=color]{
   border: 1px solid #CCC;
 }
 
+.button.create{background:#5D5;}
+
+.button.edit{background:#FC0;}
+
+.button.destroy{background:#F66}
+
+
 @media only screen and (max-width: 600px) {
   body {
     margin: 12px;
