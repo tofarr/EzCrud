@@ -7,6 +7,7 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.datetime :dob
       t.string :favorite_color
       t.string :dinner_choice
+      t.json :settings
 
       t.timestamps
     end

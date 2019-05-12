@@ -181,6 +181,10 @@ module EzCrud::Helper
 
     def assign_attributes(model)
       model.assign_attributes(model_params)
+      self.class.json_param_names.each do |attr|
+        json = JSON.parse(model.send(attr))
+        model.send("#{attr}=", json)
+      end
       self.class.model_attachment_names.each do |attr|
         process_upload(attr)
       end
@@ -306,6 +310,15 @@ module EzCrud::Helper
         types = EzCrud::Attrs.attr_types(self.model_class)
         EzCrud::Attrs.param_names(self.model_class).select do |attr|
           types[attr] == ActiveStorage::Attachment
+        end
+      end
+    end
+
+    def json_param_names
+      cache_var(:@model_attachment_names) do
+        types = EzCrud::Attrs.attr_types(self.model_class)
+        EzCrud::Attrs.param_names(self.model_class).select do |attr|
+          types[attr] == :json
         end
       end
     end
