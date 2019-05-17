@@ -16,6 +16,7 @@ require "ez_crud/handler/text_area_handler"
 require "ez_crud/handler/password_input_handler"
 require "ez_crud/handler/select_input_handler"
 require "ez_crud/handler/checkbox_input_handler"
+require "ez_crud/handler/json_input_handler"
 require "ez_crud/handler/input_handler"
 
 module EzCrud
@@ -39,6 +40,7 @@ module EzCrud
       EzCrud::Handler::PasswordInputHandler.new,
       EzCrud::Handler::SelectInputHandler.new,
       EzCrud::Handler::CheckboxInputHandler.new,
+      EzCrud::Handler::JsonInputHandler.new,
       EzCrud::Handler::InputHandler.new
     ]
 

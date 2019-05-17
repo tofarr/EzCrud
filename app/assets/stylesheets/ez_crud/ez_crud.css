@@ -25,6 +25,10 @@ input,textarea,select{
   border-radius: 0.5rem;
 }
 
+select{
+  height: 2rem;
+}
+
 input:focus,textarea:focus,select:focus{
   border-color: #06C;
   outline: none;
@@ -269,6 +273,80 @@ input[type=color]{
 
 .button.destroy{background:#F66}
 
+textarea{
+  resize: none;
+  width: 100%;
+  max-width: 600px;
+  height: 200px;
+}
+
+.json-field{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-grow: 1;
+}
+
+.json-field .items{
+  display: flex;
+  flex-direction: column;
+}
+
+.json-field .item{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.json-field .item:not(:first-child){
+  margin-top: 0.5rem;
+}
+
+.json-field .object, .json-field .array{
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #CCC;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.json-value{
+  flex-grow: 1;
+}
+
+.json-field .button{
+  height: 2rem;
+}
+
+.json-field .boolean{
+  font-size: 2rem;
+  margin-top: 0.5rem;
+}
+
+.json-tabs.locked-down .key{
+  border: none;
+  font-weight: bold;
+}
+
+.json-tabs .tab{
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.json-tabs .tab:first-child{
+  margin-left: 1rem;
+}
+
+.json-tabs .tab.active{
+  border: 1px solid #CCC;
+  border-bottom: none;
+  font-weight: bold;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
 
 @media only screen and (max-width: 600px) {
   body {
