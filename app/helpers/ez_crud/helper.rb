@@ -1,4 +1,5 @@
 require "ez_crud/attrs"
+require "ez_crud/not_authorized"
 require 'data_uri'
 require 'mime-types'
 
@@ -49,6 +50,7 @@ module EzCrud::Helper
     # GET /<model_type>/1.json
     def show
       @model = current_model
+      raise EzCrud::NotAuthorized unless viewable?(@model)
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
           render "ez_crud/show.html.erb" unless template_exists? "#{model_class.name.underscore.pluralize}/show.html.erb"
@@ -62,6 +64,7 @@ module EzCrud::Helper
     # GET /${model_type}/new
     def new
       @model = model_class.new
+      raise EzCrud::NotAuthorized unless creatable?(@model)
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
           render "ez_crud/new.html.erb" unless template_exists? "#{model_class.name.underscore.pluralize}/new.html.erb"
@@ -75,6 +78,7 @@ module EzCrud::Helper
     # GET /${model_type}/1/edit
     def edit
       @model = current_model
+      raise EzCrud::NotAuthorized unless editable?(@model)
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
           render "ez_crud/edit.html.erb" unless template_exists? "#{model_class.name.underscore.pluralize}/edit.html.erb"
@@ -90,6 +94,7 @@ module EzCrud::Helper
     def create
       @model = model_class.new(model_params)
       assign_attributes(@model)
+      raise EzCrud::NotAuthorized unless creatable?(@model)
       respond_to do |format|
         if @model.save
           format.html { redirect_to @model, notice: I18n.t('ez_crud.create_successful') }
@@ -109,6 +114,7 @@ module EzCrud::Helper
     # PATCH/PUT /<model_type>/1.json
     def update
       @model = current_model
+      raise EzCrud::NotAuthorized unless updatable?(current_model)
       assign_attributes(@model)
       respond_to do |format|
         if @model.save
@@ -128,9 +134,11 @@ module EzCrud::Helper
     # DELETE /${model_type}/1
     # DELETE /${model_type}/1.json
     def destroy
-      current_model.destroy
+      @model = current_model
+      raise EzCrud::NotAuthorized unless destroyable?(@model)
+      @model.destroy
       respond_to do |format|
-        format.html { redirect_to :index, notice: I18n.t('ez_crud.destroy_successful') }
+        format.html { redirect_to url_for(action: :index), notice: I18n.t('ez_crud.destroy_successful') }
         format.json { head :no_content }
       end
     end
@@ -138,6 +146,7 @@ module EzCrud::Helper
     # GET /${model_type}/edit_all
     # DELETE /${model_type}/1.json
     def bulk_edit
+      raise EzCrud::NotAuthorized unless bulk_edits?
       @cjob_spec = current_job_spec
       respond_to do |format|
         format.html do #use ez_crud if the template is missing use the default ez crud template
@@ -154,6 +163,7 @@ module EzCrud::Helper
     # PATCH /${model_type}
     # PATCH /${model_type}.json
     def bulk_update
+      raise EzCrud::NotAuthorized unless bulk_edits?
       @job_spec = current_job_spec
       if @job_spec.save
         EzCrudJob.perform_later(@job_spec.id)
@@ -176,6 +186,7 @@ module EzCrud::Helper
     # Never trust parameters from the scary internet, only allow the white list through.
     def model_params
       param_names = self.class.model_param_names
+      return {} if param_names.blank?
       params.require(model_class.name.underscore).permit(*param_names)
     end
 
@@ -275,6 +286,10 @@ module EzCrud::Helper
     end
 
     def editable?(model)
+      true
+    end
+
+    def updatable?(model)
       true
     end
 

@@ -5,6 +5,9 @@
       <% if editable?(@model) %>
         <%= link_to I18n.t('ez_crud.edit'), send("edit_#{@model_class.name.underscore}_path".to_sym, @model), class: "button edit" %>
       <% end %>
+      <% if destroyable?(@model) %>
+        <%= link_to I18n.t("ez_crud.destroy"), @model, method: :delete, class: "button destroy", data: { confirm: 'Are you sure?' } %>
+      <% end %>
       <%= link_to I18n.t('ez_crud.back'), send("#{@model_class.name.underscore.pluralize}_path".to_sym), class: "button back" %>
     </div>
   <% end %>
