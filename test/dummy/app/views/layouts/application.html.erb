@@ -33,6 +33,11 @@
             <%= I18n.t(User.name.underscore, default: User.name.underscore.pluralize.titleize) %>
           <% end %>
         </li>
+        <li>
+          <%= link_to restricteds_path {}, {class: "button"} do %>
+            <%= I18n.t(User.name.underscore, default: Restricted.name.underscore.pluralize.titleize) %>
+          <% end %>
+        </li>
       </ul>
     </nav>
 

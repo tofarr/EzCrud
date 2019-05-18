@@ -1,0 +1,2 @@
+class Restricted < ApplicationRecord
+end

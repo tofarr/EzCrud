@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_06_131958) do
+ActiveRecord::Schema.define(version: 2019_05_17_233234) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -65,21 +65,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_131958) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "ez_crud_doohickeys", force: :cascade do |t|
-    t.string "title"
-    t.float "weight"
-    t.integer "amount"
-    t.boolean "available"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "ez_crud_job_specs", force: :cascade do |t|
-    t.string "type", limit: 50
-    t.string "model_type", limit: 50
-    t.text "search"
-    t.text "updates"
+  create_table "restricteds", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

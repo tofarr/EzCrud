@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  owner_id: 1
+  only_owner_can_edit: false
+  only_owner_can_view: false
+  only_owner_can_destroy: false
+
+two:
+  owner_id: 1
+  only_owner_can_edit: false
+  only_owner_can_view: false
+  only_owner_can_destroy: false
